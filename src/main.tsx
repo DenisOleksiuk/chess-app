@@ -5,11 +5,13 @@ import Root from './routes/root.tsx';
 
 import './index.css';
 import Game from './routes/game.tsx';
+import ErrorPage from './components/error-page.tsx';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Root />
+        element: <Root />,
+        errorElement: <ErrorPage />
     },
     {
         path: '/game',

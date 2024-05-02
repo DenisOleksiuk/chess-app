@@ -24,5 +24,10 @@
         }
     },
     "include": ["src", "public/stockfish/stockfish.wasm copy.js"],
+    "exclude": [
+        "node_modules",
+        "public/stockfish/stockfish.wasm copy.js",
+        "src/engine.ts"
+    ],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

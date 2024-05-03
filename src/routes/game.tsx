@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Square } from 'chess.js';
 
 import { Chessboard } from 'react-chessboard';
@@ -9,13 +9,12 @@ import { Timer } from '@/components/Timer';
 import ChessResultModal from '@/components/ChessResultModal';
 
 export default function Game() {
-    const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver } = useChess();
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner } =
+        useChess();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const player1Timer = useTimer({ isPaused: true });
     const player2Timer = useTimer({ isPaused: false });
-
-    console.log('isGameOver :>> ', isGameOver);
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
         const move = makeAMove({
@@ -31,7 +30,7 @@ export default function Game() {
         player1Timer.togglePause();
         player2Timer.togglePause();
 
-        wait(1000).then(() => {
+        wait(3000).then(() => {
             player1Timer.togglePause();
             player2Timer.togglePause();
 
@@ -47,13 +46,14 @@ export default function Game() {
         player2Timer.resetTimer({ isPaused: false });
     };
 
+    useEffect(() => {
+        if (isGameOver) {
+            setIsModalOpen(true);
+        }
+    }, [isGameOver]);
+
     return (
         <div style={{ width: 560 }}>
-            <ChessResultModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                winner="test"
-            />
             <Timer
                 position={'left'}
                 isPause={player1Timer.isPaused}
@@ -70,6 +70,12 @@ export default function Game() {
                 <button onClick={newGame}>New game</button>
                 <button onClick={undo}>Undo</button>
             </div>
+
+            <ChessResultModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                winner={winner}
+            />
         </div>
     );
 }

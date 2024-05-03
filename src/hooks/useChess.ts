@@ -5,18 +5,18 @@ import { Chess, Move } from 'chess.js';
 type MakeAMoveProps = Pick<Move, 'from' | 'to' | 'promotion'> | string;
 
 export const useChess = () => {
-    const chess = useMemo(
-        () => new Chess('rnb1kbnr/pppp1ppp/8/4p2q/5PP1/8/PPPPP2P/RNBQKBNR w KQkq - 1 3'),
-        []
-    );
+    const chess = useMemo(() => new Chess(), []);
     const [fen, setFen] = useState(chess.fen());
     const [isGameOver, setIsGameOver] = useState(false);
+    const [winner, setWinner] = useState('');
 
     const makeAMove = useCallback(
         (move: MakeAMoveProps) => {
             const moveResult = chess.move(move);
+
             if (chess.isGameOver()) {
                 setIsGameOver(true);
+                setWinner(chess.turn() === 'w' ? 'Black' : 'White');
             }
             setFen(chess.fen());
             return moveResult;
@@ -46,5 +46,5 @@ export const useChess = () => {
         setFen(chess.fen());
     }, [chess]);
 
-    return { fen, makeAMove, makeRandomMove, reset, undo, isGameOver };
+    return { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner };
 };

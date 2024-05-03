@@ -49,6 +49,7 @@ export const useChess = () => {
     }, [chess]);
 
     return {
+        chess,
         fen,
         makeAMove,
         makeRandomMove,

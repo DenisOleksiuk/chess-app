@@ -16,8 +16,17 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import './game.css';
 
 export default function Game() {
-    const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner, setWinner } =
-        useChess();
+    const {
+        chess,
+        fen,
+        makeAMove,
+        makeRandomMove,
+        reset,
+        undo,
+        isGameOver,
+        winner,
+        setWinner
+    } = useChess();
     const isMobile = useIsMobile();
     const [isResultModalOpen, setIsResultModalOpen] = useState(false);
     const [orientation, setOrientation] = useState<BoardOrientation>();
@@ -28,6 +37,13 @@ export default function Game() {
     const makeARandomMove = useMakeMove(makeRandomMove, player1Timer, player2Timer);
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
+        if (
+            (orientation === 'white' && chess.turn() === 'b') ||
+            (orientation === 'black' && chess.turn() === 'w')
+        ) {
+            return false;
+        }
+
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,

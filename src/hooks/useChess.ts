@@ -48,5 +48,5 @@ export const useChess = () => {
         setFen(chess.fen());
     }, [chess]);
 
-    return { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner };
+    return { chess, fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner };
 };

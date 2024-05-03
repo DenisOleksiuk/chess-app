@@ -12,7 +12,7 @@ import useIsMobile from '@/hooks/useIsMobile';
 import './game.css';
 
 export default function Game() {
-    const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner } =
+    const { chess, fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner } =
         useChess();
     const isMobile = useIsMobile();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +21,10 @@ export default function Game() {
     const player2Timer = useTimer({ isPaused: false });
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
+        if (chess.turn() === 'b') {
+            return false;
+        }
+
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,

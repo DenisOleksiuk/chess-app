@@ -1,30 +1,33 @@
 import { useEffect, useState } from 'react';
 import { Square } from 'chess.js';
-
 import { Chessboard } from 'react-chessboard';
+import { BoardOrientation } from 'react-chessboard/dist/chessboard/types';
+
+import { Timer } from '@/components/Timer';
+import { OrientationModal } from './_components/OrientationModal';
+import { ResultModal } from './_components/ResultModal';
+import { ButtonsContainer } from './_components/ButtonsContainer';
+
 import { useChess } from '@/hooks/useChess';
 import { useTimer } from '@/hooks/useTimer';
-import { wait } from '@/utils';
-import { Timer } from '@/components/Timer';
-import ChessResultModal from '@/components/ChessResultModal';
-import useIsMobile from '@/hooks/useIsMobile';
+import { useMakeMove } from '@/hooks/useMakeMove';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 import './game.css';
 
 export default function Game() {
-    const { chess, fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner } =
+    const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner, setWinner } =
         useChess();
     const isMobile = useIsMobile();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+    const [orientation, setOrientation] = useState<BoardOrientation>();
 
     const player1Timer = useTimer({ isPaused: true });
-    const player2Timer = useTimer({ isPaused: false });
+    const player2Timer = useTimer({ isPaused: true });
+
+    const makeARandomMove = useMakeMove(makeRandomMove, player1Timer, player2Timer);
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
-        if (chess.turn() === 'b') {
-            return false;
-        }
-
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,
@@ -38,30 +41,30 @@ export default function Game() {
         player1Timer.togglePause();
         player2Timer.togglePause();
 
-        wait(3000).then(() => {
-            player1Timer.togglePause();
-            player2Timer.togglePause();
-
-            makeRandomMove();
-        });
+        makeARandomMove();
 
         return true;
     }
 
-    const newGame = () => {
+    const handleNewGame = () => {
         reset();
         player1Timer.resetTimer({ isPaused: true });
         player2Timer.resetTimer({ isPaused: false });
     };
 
-    const onCloseModal = () => {
-        setIsModalOpen(false);
-        newGame();
+    const onCloseResultModal = () => {
+        setIsResultModalOpen(false);
+        handleNewGame();
+    };
+
+    const onFinishTimer = (winner: string) => {
+        setIsResultModalOpen(true);
+        setWinner(winner);
     };
 
     useEffect(() => {
         if (isGameOver) {
-            setIsModalOpen(true);
+            setIsResultModalOpen(true);
         }
     }, [isGameOver]);
 
@@ -71,22 +74,33 @@ export default function Game() {
                 position={'left'}
                 isPause={player1Timer.isPaused}
                 reset={player1Timer.reset}
+                onTimerFinish={() => onFinishTimer('White')}
             />
-            <Chessboard position={fen} onPieceDrop={onDrop} />
+            <Chessboard
+                position={fen}
+                onPieceDrop={onDrop}
+                boardOrientation={orientation}
+            />
             <Timer
                 position={'right'}
                 isPause={player2Timer.isPaused}
                 reset={player2Timer.reset}
+                onTimerFinish={() => onFinishTimer('Black')}
             />
 
-            <div className="buttons-container">
-                <button onClick={newGame}>New game</button>
-                <button onClick={undo}>Undo</button>
-            </div>
+            <ButtonsContainer newGame={handleNewGame} undo={undo} />
 
-            <ChessResultModal
-                isOpen={isModalOpen}
-                onClose={onCloseModal}
+            <OrientationModal
+                isOpen={!orientation}
+                setOrientation={setOrientation}
+                player1Timer={player1Timer}
+                player2Timer={player2Timer}
+                makeARandomMove={makeARandomMove}
+            />
+
+            <ResultModal
+                isOpen={isResultModalOpen}
+                onClose={onCloseResultModal}
                 winner={winner}
             />
         </div>

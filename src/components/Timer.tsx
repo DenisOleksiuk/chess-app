@@ -4,9 +4,10 @@ type Props = {
     position: 'left' | 'right';
     isPause: boolean;
     reset: boolean;
+    onTimerFinish: () => void;
 };
 
-export const Timer = ({ position, isPause, reset }: Props) => {
+export const Timer = ({ position, isPause, reset, onTimerFinish }: Props) => {
     const [seconds, setSeconds] = useState(600);
 
     useEffect(() => {
@@ -16,6 +17,10 @@ export const Timer = ({ position, isPause, reset }: Props) => {
     }, [reset]);
 
     useEffect(() => {
+        if (seconds === 0) {
+            onTimerFinish();
+        }
+
         if (!isPause && seconds > 0) {
             const intervalId = setInterval(() => {
                 setSeconds(seconds - 1);
@@ -23,7 +28,7 @@ export const Timer = ({ position, isPause, reset }: Props) => {
 
             return () => clearInterval(intervalId);
         }
-    }, [seconds, isPause]);
+    }, [seconds, isPause, onTimerFinish]);
 
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;

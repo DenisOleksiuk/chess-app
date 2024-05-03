@@ -7,7 +7,10 @@ type MakeAMoveProps = Pick<Move, 'from' | 'to' | 'promotion'> | string;
 // isCheckmate fen rnb1kbnr/pppp1ppp/8/4p2q/5PP1/8/PPPPP2P/RNBQKBNR b KQkq - 1 3
 
 export const useChess = () => {
-    const chess = useMemo(() => new Chess(), []);
+    const chess = useMemo(
+        () => new Chess('rnb1kbnr/pppp1ppp/8/4p2q/5PP1/8/PPPPP2P/RNBQKBNR b KQkq - 1 3'),
+        []
+    );
     const [fen, setFen] = useState(chess.fen());
     const [isGameOver, setIsGameOver] = useState(false);
     const [winner, setWinner] = useState('');
@@ -26,7 +29,7 @@ export const useChess = () => {
         [chess]
     );
 
-    function makeRandomMove() {
+    const makeRandomMove = useCallback(() => {
         const possibleMoves = chess.moves();
 
         if (chess.isGameOver() || chess.isDraw() || possibleMoves.length === 0) {
@@ -36,7 +39,7 @@ export const useChess = () => {
         const randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
         makeAMove(possibleMoves[randomIndex]);
-    }
+    }, [chess, makeAMove]);
 
     const reset = useCallback(() => {
         chess.reset();
@@ -48,5 +51,14 @@ export const useChess = () => {
         setFen(chess.fen());
     }, [chess]);
 
-    return { chess, fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner };
+    return {
+        fen,
+        makeAMove,
+        makeRandomMove,
+        reset,
+        undo,
+        isGameOver,
+        winner,
+        setWinner
+    };
 };

@@ -7,12 +7,14 @@ import { useTimer } from '@/hooks/useTimer';
 import { wait } from '@/utils';
 import { Timer } from '@/components/Timer';
 import ChessResultModal from '@/components/ChessResultModal';
+import useIsMobile from '@/hooks/useIsMobile';
 
 import './game.css';
 
 export default function Game() {
     const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner } =
         useChess();
+    const isMobile = useIsMobile();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const player1Timer = useTimer({ isPaused: true });
@@ -60,7 +62,7 @@ export default function Game() {
     }, [isGameOver]);
 
     return (
-        <div style={{ width: 560 }}>
+        <div style={{ width: isMobile ? 320 : 560 }}>
             <Timer
                 position={'left'}
                 isPause={player1Timer.isPaused}

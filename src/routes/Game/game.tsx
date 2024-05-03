@@ -8,6 +8,8 @@ import { wait } from '@/utils';
 import { Timer } from '@/components/Timer';
 import ChessResultModal from '@/components/ChessResultModal';
 
+import './game.css';
+
 export default function Game() {
     const { fen, makeAMove, makeRandomMove, reset, undo, isGameOver, winner } =
         useChess();
@@ -46,6 +48,11 @@ export default function Game() {
         player2Timer.resetTimer({ isPaused: false });
     };
 
+    const onCloseModal = () => {
+        setIsModalOpen(false);
+        newGame();
+    };
+
     useEffect(() => {
         if (isGameOver) {
             setIsModalOpen(true);
@@ -66,14 +73,14 @@ export default function Game() {
                 reset={player2Timer.reset}
             />
 
-            <div className="flex gap-5 mt-4">
+            <div className="buttons-container">
                 <button onClick={newGame}>New game</button>
                 <button onClick={undo}>Undo</button>
             </div>
 
             <ChessResultModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={onCloseModal}
                 winner={winner}
             />
         </div>

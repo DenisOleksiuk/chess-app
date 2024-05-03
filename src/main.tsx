@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from '@/routes/Root';
-import Game from '@/routes/game.tsx';
+import Game from '@/routes/Game';
 import ErrorPage from '@/components/ErrorPage';
 import Layout from '@/layouts/main';
 

@@ -1,0 +1,24 @@
+.buttons-container {
+    display: flex;
+    gap: 20px;
+}
+
+.buttons-container button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    font-weight: 600;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.5s;
+    box-shadow: 0 3px 5px 2px rgba(255, 105, 135, 0.3);
+    outline: none;
+    text-transform: uppercase;
+}
+
+.buttons-container button:hover {
+    box-shadow: 0 10px 15px 5px rgba(255, 105, 135, 0.5);
+}

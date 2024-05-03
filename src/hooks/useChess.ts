@@ -7,10 +7,7 @@ type MakeAMoveProps = Pick<Move, 'from' | 'to' | 'promotion'> | string;
 // isCheckmate fen rnb1kbnr/pppp1ppp/8/4p2q/5PP1/8/PPPPP2P/RNBQKBNR b KQkq - 1 3
 
 export const useChess = () => {
-    const chess = useMemo(
-        () => new Chess('rnb1kbnr/pppp1ppp/8/4p2q/5PP1/8/PPPPP2P/RNBQKBNR b KQkq - 1 3'),
-        []
-    );
+    const chess = useMemo(() => new Chess(), []);
     const [fen, setFen] = useState(chess.fen());
     const [isGameOver, setIsGameOver] = useState(false);
     const [winner, setWinner] = useState('');

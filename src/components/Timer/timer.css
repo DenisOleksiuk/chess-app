@@ -1,0 +1,18 @@
+.timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 1.5em;
+    font-weight: bold;
+    width: 100px;
+}
+
+/* .timer span {
+    display: block;
+    width: 100%;
+    text-align: center;
+} */

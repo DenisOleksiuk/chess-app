@@ -1,3 +1,5 @@
+import './buttons-container.css';
+
 interface ButtonsContainerProps {
     newGame: () => void;
     undo: () => void;

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import './timer.css';
+
 type Props = {
     position: 'left' | 'right';
     isPause: boolean;
@@ -7,7 +9,7 @@ type Props = {
     onTimerFinish: () => void;
 };
 
-export const Timer = ({ position, isPause, reset, onTimerFinish }: Props) => {
+const Timer = ({ position, isPause, reset, onTimerFinish }: Props) => {
     const [seconds, setSeconds] = useState(600);
 
     useEffect(() => {
@@ -34,11 +36,16 @@ export const Timer = ({ position, isPause, reset, onTimerFinish }: Props) => {
     const remainingSeconds = seconds % 60;
 
     return (
-        <div style={{ textAlign: position }} className="my-4">
-            <span className="border-white border-2 p-2">
+        <div
+            className="timer"
+            style={position === 'left' ? { marginRight: 'auto' } : { marginLeft: 'auto' }}
+        >
+            <span>
                 {minutes.toString().padStart(2, '0')}:
                 {remainingSeconds.toString().padStart(2, '0')}
             </span>
         </div>
     );
 };
+
+export default Timer;

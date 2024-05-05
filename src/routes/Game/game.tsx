@@ -3,10 +3,10 @@ import { Square } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { BoardOrientation } from 'react-chessboard/dist/chessboard/types';
 
-import { Timer } from '@/components/Timer';
+import Timer from '@/components/Timer';
 import { OrientationModal } from './_components/OrientationModal';
 import { ResultModal } from './_components/ResultModal';
-import { ButtonsContainer } from './_components/ButtonsContainer';
+import { ButtonsContainer } from './_components/ButtonsContainer/ButtonsContainer';
 
 import { useChess } from '@/hooks/useChess';
 import { useTimer } from '@/hooks/useTimer';
@@ -64,6 +64,16 @@ export default function Game() {
 
     const handleNewGame = () => {
         reset();
+
+        if (orientation === 'black') {
+            makeARandomMove();
+
+            player1Timer.resetTimer({ isPaused: false });
+            player2Timer.resetTimer({ isPaused: true });
+
+            return;
+        }
+
         player1Timer.resetTimer({ isPaused: true });
         player2Timer.resetTimer({ isPaused: false });
     };
@@ -86,23 +96,25 @@ export default function Game() {
 
     return (
         <div style={{ width: isMobile ? 320 : 560 }}>
-            <Timer
-                position={'left'}
-                isPause={player1Timer.isPaused}
-                reset={player1Timer.reset}
-                onTimerFinish={() => onFinishTimer('White')}
-            />
-            <Chessboard
-                position={fen}
-                onPieceDrop={onDrop}
-                boardOrientation={orientation}
-            />
-            <Timer
-                position={'right'}
-                isPause={player2Timer.isPaused}
-                reset={player2Timer.reset}
-                onTimerFinish={() => onFinishTimer('Black')}
-            />
+            <div className="board-container">
+                <Timer
+                    position={'left'}
+                    isPause={player1Timer.isPaused}
+                    reset={player1Timer.reset}
+                    onTimerFinish={() => onFinishTimer('White')}
+                />
+                <Chessboard
+                    position={fen}
+                    onPieceDrop={onDrop}
+                    boardOrientation={orientation}
+                />
+                <Timer
+                    position={'right'}
+                    isPause={player2Timer.isPaused}
+                    reset={player2Timer.reset}
+                    onTimerFinish={() => onFinishTimer('Black')}
+                />
+            </div>
 
             <ButtonsContainer newGame={handleNewGame} undo={undo} />
 

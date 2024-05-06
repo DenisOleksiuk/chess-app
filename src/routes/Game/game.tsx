@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Square } from 'chess.js';
 import { Chessboard } from 'react-chessboard';
 import { BoardOrientation } from 'react-chessboard/dist/chessboard/types';
 
 import Timer from '@/components/Timer';
+import { useChess } from '@/hooks/useChess';
+import { useTimer } from '@/hooks/useTimer';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { wait } from '@/utils';
+
 import { OrientationModal } from './_components/OrientationModal';
 import { ResultModal } from './_components/ResultModal';
 import { ButtonsContainer } from './_components/ButtonsContainer/ButtonsContainer';
-
-import { useChess } from '@/hooks/useChess';
-import { useTimer } from '@/hooks/useTimer';
-import { useMakeMove } from '@/hooks/useMakeMove';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 import './game.css';
 
@@ -34,7 +34,13 @@ export default function Game() {
     const player1Timer = useTimer({ isPaused: true });
     const player2Timer = useTimer({ isPaused: true });
 
-    const makeARandomMove = useMakeMove(makeRandomMove, player1Timer, player2Timer);
+    const makeARandomMove = useCallback(() => {
+        wait(500).then(() => {
+            makeRandomMove();
+            player1Timer.togglePause();
+            player2Timer.togglePause();
+        });
+    }, [makeRandomMove, player1Timer, player2Timer]);
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
         if (
@@ -86,6 +92,8 @@ export default function Game() {
     const onFinishTimer = (winner: string) => {
         setIsResultModalOpen(true);
         setWinner(winner);
+        player1Timer.resetTimer({ isPaused: true });
+        player2Timer.resetTimer({ isPaused: true });
     };
 
     useEffect(() => {
@@ -94,6 +102,18 @@ export default function Game() {
         }
     }, [isGameOver]);
 
+    if (!orientation) {
+        return (
+            <OrientationModal
+                isOpen={!orientation}
+                setOrientation={setOrientation}
+                player1Timer={player1Timer}
+                player2Timer={player2Timer}
+                makeARandomMove={makeARandomMove}
+            />
+        );
+    }
+
     return (
         <div style={{ width: isMobile ? 320 : 560 }}>
             <div className="board-container">
@@ -101,7 +121,7 @@ export default function Game() {
                     position={'left'}
                     isPause={player1Timer.isPaused}
                     reset={player1Timer.reset}
-                    onTimerFinish={() => onFinishTimer('White')}
+                    onTimerFinish={() => onFinishTimer('Black')}
                 />
                 <Chessboard
                     position={fen}
@@ -112,19 +132,11 @@ export default function Game() {
                     position={'right'}
                     isPause={player2Timer.isPaused}
                     reset={player2Timer.reset}
-                    onTimerFinish={() => onFinishTimer('Black')}
+                    onTimerFinish={() => onFinishTimer('White')}
                 />
             </div>
 
             <ButtonsContainer newGame={handleNewGame} undo={undo} />
-
-            <OrientationModal
-                isOpen={!orientation}
-                setOrientation={setOrientation}
-                player1Timer={player1Timer}
-                player2Timer={player2Timer}
-                makeARandomMove={makeARandomMove}
-            />
 
             <ResultModal
                 isOpen={isResultModalOpen}

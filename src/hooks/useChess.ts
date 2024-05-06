@@ -1,10 +1,10 @@
-// hooks/useChess.ts
 import { useState, useCallback, useMemo } from 'react';
 import { Chess, Move } from 'chess.js';
 
 type MakeAMoveProps = Pick<Move, 'from' | 'to' | 'promotion'> | string;
 
 // isCheckmate fen rnb1kbnr/pppp1ppp/8/4p2q/5PP1/8/PPPPP2P/RNBQKBNR b KQkq - 1 3
+// rnb1kb1r/pppp1p2/8/2PP4/P3np2/7q/1P2Kp1p/2RN4 b kq - 0 19
 
 export const useChess = () => {
     const chess = useMemo(() => new Chess(), []);
@@ -48,6 +48,7 @@ export const useChess = () => {
         setFen(chess.fen());
     }, [chess]);
 
+    makeRandomMove;
     return {
         chess,
         fen,
@@ -56,6 +57,7 @@ export const useChess = () => {
         reset,
         undo,
         isGameOver,
+        setIsGameOver,
         winner,
         setWinner
     };

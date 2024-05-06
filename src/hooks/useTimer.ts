@@ -5,7 +5,7 @@ type TimerProps = {
 };
 
 export const useTimer = ({ isPaused: isDefaultPaused }: TimerProps) => {
-    const [isPaused, setIsPaused] = useState(() => isDefaultPaused);
+    const [isPaused, setIsPaused] = useState(isDefaultPaused);
     const [reset, setReset] = useState(false);
 
     const togglePause = useCallback(() => {

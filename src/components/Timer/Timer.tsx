@@ -37,6 +37,8 @@ const Timer = ({ position, isPause, reset, onTimerFinish }: Props) => {
 
     return (
         <div
+            role="timer"
+            tabIndex={0}
             className="timer"
             style={position === 'left' ? { marginRight: 'auto' } : { marginLeft: 'auto' }}
         >

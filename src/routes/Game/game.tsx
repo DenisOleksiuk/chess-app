@@ -35,7 +35,7 @@ export default function Game() {
     const player2Timer = useTimer({ isPaused: true });
 
     const makeARandomMove = useCallback(() => {
-        wait(500).then(() => {
+        wait(3000).then(() => {
             makeRandomMove();
             player1Timer.togglePause();
             player2Timer.togglePause();
@@ -53,6 +53,7 @@ export default function Game() {
         const move = makeAMove({
             from: sourceSquare,
             to: targetSquare,
+            // TODO: pass promotion piece dinamically
             promotion: 'q'
         });
 
@@ -123,6 +124,7 @@ export default function Game() {
                     reset={player1Timer.reset}
                     onTimerFinish={() => onFinishTimer('Black')}
                 />
+                {/* TODO: add ability to track select promotion  */}
                 <Chessboard
                     position={fen}
                     onPieceDrop={onDrop}
